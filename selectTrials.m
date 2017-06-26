@@ -1,4 +1,4 @@
-function [dataTable_selectedTrials, dataCell_selectedTrials, varargin] = selectTrials(dataTable, SELECTED_MOUSE, verbose, varargin)
+function [dataTable_selectedTrials, dataCell_selectedTrials] = selectTrials(dataTable, SELECTED_MOUSE, VERBOSE, varargin)
 
 dataCell = table2cell(dataTable);
 
@@ -52,7 +52,7 @@ if size(varargin,2) == 2
     
     dataTable_selectedTrials = cell2table(dataCell_selectedTrials, 'variablenames', dataTable.Properties.VariableNames);
     
-    if verbose == 1
+    if VERBOSE == 1
         disp(trialInds_selectedStim2');
         disp('class 1 inds')
         disp(trialInds_class1');
@@ -89,7 +89,7 @@ elseif size(varargin,2) == 1
     class1num = numel(trialInds_class1);
     totalNumTrials = class1num;
     
-    if verbose == 1
+    if VERBOSE == 1
         disp(['selected trials for mouse: ' num2str(SELECTED_MOUSE)])
         disp(trialInds_mouse);
         
@@ -120,7 +120,7 @@ elseif isempty(varargin)
     
     totalNumTrials = length(trialInds_mouse);
     
-    if verbose == 1
+    if VERBOSE == 1
         disp(['selected trials for mouse: ' num2str(SELECTED_MOUSE)])
         disp(trialInds_mouse');
         disp('no stimuli chosen --> returning all trials matching mouse selection(s)')

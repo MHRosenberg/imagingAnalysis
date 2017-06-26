@@ -1,10 +1,11 @@
+function [tidyTrialCell] = makeTrialTidy(dataTable, dataCell)
 trialInd = 1;
+
 alreadyTidyPart = dataCell(trialInd,1:5);
 
 notFlatPartCell = dataTable.rast(trialInd); % ISSUE: expand to flatten the rest of the table at some point
 notFlatPartMat = notFlatPartCell{1};
 
-% clear vars dataCell dataTable
 
 %%% get num of neurons and time points
 try
