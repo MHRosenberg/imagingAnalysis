@@ -24,7 +24,7 @@ A_results = [];
 %%
 clear vars expt
 VERBOSE = 1;
-SELECTED_MOUSE = 1;% use 0 to select all mice
+SELECTED_MOUSE = 0;% use 0 to select all mice
 
 
 %%
@@ -41,8 +41,8 @@ for mouseInd = 1:numel(mice)
     tic
     disp(['made data tidy for mouse: ' num2str(mouseInd) 'of ' num2str(numel(mice))])
     disp('writing tidy data to csv file (takes a long time)')
-    fileName = ['mouse' num2str(mouseInd)];
-        cell2csv('mouse.csv',tidyData)
+    fileName = ['mouse' num2str(mouseInd) '.csv'];
+    cell2csv(fileName,tidyData)
     toc
     disp('wrote csv file to current directory')
 end
