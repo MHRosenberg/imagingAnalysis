@@ -13,7 +13,7 @@ close all;
 %% new way to load data (after 6/13/17)
 tic
 disp('loading (sometimes takes a little while)')
-load('/home/orthogonull/a_MHR/a_research/a_gitResearch/git_ignored/imagingAnalysis/data/1_structFormat/quickloader.mat')
+load('/home/orthogonull/a_MHR/aa_research/aa_gitResearch/git_ignored/a_dataForCurrentAnalysis/1_structFormat/quickloader.mat')
 disp('finished loading')
 toc
 %%
@@ -26,8 +26,36 @@ clear vars expt
 VERBOSE = 1;
 SELECTED_MOUSE = 0;% use 0 to select all mice
 
+%% just save stimulus onsets to csv file
+OUTPUT_DIR = '/home/orthogonull/a_MHR/aa_research/aa_gitResearch/git_ignored/a_dataForCurrentAnalysis/2_tidyCSVformat/';
 
-%%
+t = dataTable; 
+tidyOnsetsCell = cell(height(t), 6);
+for trialInd =1:height(t)
+    disp(['trial index: ' num2str(trialInd)])
+       %%% check if onset/offset info exists in dataCell
+    if ~isnan(t.annot(trialInd,1).stim.stim_on)
+        disp('stimulus times found')
+        stimOnset = t.annot(trialInd,1).stim.stim_on(1);
+        stimOffset = t.annot(trialInd,1).stim.stim_on(2);
+        
+    else %%% WORK: add condition to potentially provide estimated stimulus onset
+        disp('no stimulus onset/offset times found')
+        stimOnset = nan;
+        stimOffset = nan;
+    end
+    tidyOnsetsCell(trialInd,:) = [t.mouse(trialInd), t.session(trialInd), t.trial(trialInd), t.stim(trialInd), stimOnset, stimOffset];
+
+end
+clearvars t 
+ 
+FILE_NAME = 'stimulusTimings.csv';
+path_n_name = [OUTPUT_DIR FILE_NAME];
+cell2csv(path_n_name,tidyOnsetsCell)
+
+
+%% make data tidy (possibly with onsets and offsets depending on the version)
+
 mice = unique(dataTable.mouse);
 clear vars dataCell 
 tidyData = {};
@@ -41,7 +69,7 @@ for mouseInd = 1:numel(mice)
     tic
     disp(['made data tidy for mouse: ' num2str(mouseInd) 'of ' num2str(numel(mice))])
     disp('writing tidy data to csv file (takes a long time)')
-    fileName = ['mouse' num2str(mouseInd) '.csv'];
+    fileName = ['mouse' num2str(mice(mouseInd)) '.csv'];
     cell2csv(fileName,tidyData)
     toc
     disp('wrote csv file to current directory')
