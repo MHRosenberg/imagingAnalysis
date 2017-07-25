@@ -27,24 +27,30 @@ VERBOSE = 1;
 SELECTED_MOUSE = 0;% use 0 to select all mice
 
 %% just save stimulus onsets to csv file
-OUTPUT_DIR = '/home/orthogonull/a_MHR/aa_research/aa_gitResearch/git_ignored/a_dataForCurrentAnalysis/2_tidyCSVformat/';
+OUTPUT_DIR = '/home/orthogonull/a_MHR/aa_research/aa_gitResearch/git_ignored/imagingAnalysis/data//2_tidyCSVformat/';
 
 t = dataTable; 
-tidyOnsetsCell = cell(height(t), 6);
+tidyOnsetsCell = cell(height(t), 8);
 for trialInd =1:height(t)
     disp(['trial index: ' num2str(trialInd)])
        %%% check if onset/offset info exists in dataCell
     if ~isnan(t.annot(trialInd,1).stim.stim_on)
         disp('stimulus times found')
-        stimOnset = t.annot(trialInd,1).stim.stim_on(1);
-        stimOffset = t.annot(trialInd,1).stim.stim_on(2);
+        
+        stimOnsetFrame = t.annot(trialInd,1).stim.stim_on(1);
+        stimOffsetFrame = t.annot(trialInd,1).stim.stim_on(2);
+        stimOnsetTime = t.annoTime{trialInd}(stimOnsetFrame);
+        stimOffsetTime = t.annoTime{trialInd}(stimOffsetFrame);
         
     else %%% WORK: add condition to potentially provide estimated stimulus onset
         disp('no stimulus onset/offset times found')
-        stimOnset = nan;
-        stimOffset = nan;
+        stimOnsetFrame = nan;
+        stimOffsetFrame = nan;
+        stimOnsetTime = nan;
+        stimOffsetTime = nan;
     end
-    tidyOnsetsCell(trialInd,:) = [t.mouse(trialInd), t.session(trialInd), t.trial(trialInd), t.stim(trialInd), stimOnset, stimOffset];
+    tidyOnsetsCell(trialInd,:) = [t.mouse(trialInd), t.session(trialInd), t.trial(trialInd), t.stim(trialInd), ...
+        stimOnsetFrame, stimOffsetFrame, stimOnsetTime, stimOffsetTime];
 
 end
 clearvars t 
@@ -52,6 +58,7 @@ clearvars t
 FILE_NAME = 'stimulusTimings.csv';
 path_n_name = [OUTPUT_DIR FILE_NAME];
 cell2csv(path_n_name,tidyOnsetsCell)
+disp(['wrote stimulus timings to: ' path_n_name])
 
 
 %% make data tidy (possibly with onsets and offsets depending on the version)

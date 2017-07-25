@@ -11,13 +11,13 @@ clear;
 close all;
 
 %% new way to load data (after 6/13/17)
-disp('loading (sometimes takes a little while)')    
-load('/home/orthogonull/a_MHR/a_research/a_gitResearch/git_ignored/imagingAnalysis/quickloader.mat')
+disp('loading (sometimes takes a little while)')
+load('~/a_MHR/a_research/a_Anderson/endoscope/Ca imaging/quickloader.mat')
 disp('finished loading')
 
 %%
 %%% input the name of the matlab struct containing the data into the function below
-[dataTable, dataCell] = flattenMouseDataStructToTable(expt); 
+[dataTable, dataCell] = flattenMouseDataStructToTable06_13_17(expt); % table and cell contain identical info but are structured differently to aid different implementations
 A_results = [];
 
 %% data selection parameters
@@ -30,7 +30,10 @@ STIM_ONSET_GUESS = 201;
 STIM_OFFSET_GUESS = 430;
 
 %% store selected trials
-[dataTable_selectedTrials, ~, ~] = selectTrials(dataTable, SELECTED_MOUSE, VERBOSE); % syntax: dataTable, dataCell, SELECTED_MOUSE, stimulie eg. 'rat', 'pred odor' (varargins (list of stimuli name))
+[dataTable_selectedTrials, ~, ~] = selectTrials06_05_17(dataTable, SELECTED_MOUSE, VERBOSE); % syntax: dataTable, dataCell, SELECTED_MOUSE, stimulie eg. 'rat', 'pred odor' (varargins (list of stimuli name))
+
+%% concatenate cells into the same rows in each session
+[dataTable_uniqueCellRows] = rowConcatenateCells06_24_17(dataTable_selectedTrials, STIM_ONSET_GUESS, STIM_OFFSET_GUESS);
 
 %% generate 2 lists: 1. all trial types 2. all unique pairs of trial types (RANDOMIZED to avoid biases in looking at the data)
 allStimuliNames = unique(dataTable_uniqueCellRows.stim);
@@ -40,15 +43,6 @@ allPairsOfStimuli_names = cell(size(allPairsOfStimuli_inds));
 for rowInd = 1:length(allPairsOfStimuli_inds)
     allPairsOfStimuli_names(rowInd,:) = {allStimuliNames{allPairsOfStimuli_inds(rowInd,1)} allStimuliNames{allPairsOfStimuli_inds(rowInd,2)}};
 end
-
-%% SVM: create min truncated/aligned comparison datasets for further matlab or python analysis
-for stimPairInd = 1:length(allPairsOfStimuli_inds)
-    [dataTable_uniqueCellRows] = truncToMinTrialLength(dataTable_selectedTrials, STIM_ONSET_GUESS, STIM_OFFSET_GUESS);
-    disp(['created properly formatted data set in: ' outputDir ' for stimuli: ' allPairsOfStimuli_names(stimPairInd)])
-end
-    
-%% concatenate cells into the same rows in each session
-[dataTable_uniqueCellRows] = rowConcatenateNeurons(dataTable_selectedTrials, STIM_ONSET_GUESS, STIM_OFFSET_GUESS);
 
 % %% loop over all pairs of stimuli
 % close all

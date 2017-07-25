@@ -73,33 +73,3 @@ allDataFlatTable = cell2table(allDataFlatCell,'VariableNames', {'date','mouse','
 
 end
 
-
-%         p = plot(cell2mat(sessionAvgPlotMat'));
-%         legend(avg_Ca_responses(:,1),'location','best');
-%         title(['mouse ' num2str(mouseInd)])
-%         xticks(1:1:3)
-%         analyzed_mouse.fig = p;
-
-
-
-
-%             for trialInd = 1:numTrials
-%                 stimTypes{trialInd} = mouse(mouseInd).(sessionName)(trialInd).stim;
-%             end
-%             stimTypes = unique(stimTypes);
-%
-%             % average Ca response by stim/trial type
-%             avg_Ca_responses = stimTypes;
-%             avg_Ca_responses{length(stimTypes),2} = []; % columns: stim type, avg response
-%             for stimTypeInd = 1:length(stimTypes)
-%                 desiredStim = stimTypes{stimTypeInd};
-%                 disp(desiredStim);
-%                 inds_trialsWstim = find(strcmp({mouse(mouseInd).(sessionName).stim}, desiredStim)==1);
-%                 temp = nan(length(inds_trialsWstim),1);
-%                 for ind = 1:length(inds_trialsWstim)
-%                     temp(ind) = mean(mean(mouse(mouseInd).(sessionName)(inds_trialsWstim(ind)).rast));
-%                 end
-%                 avg_Ca_responses{stimTypeInd, 2} = mean(temp);
-%             end
-%             analyzed_mouse(mouseInd).(sessionName).avg_Ca_responses = avg_Ca_responses;
-%             sessionAvgPlotMat = [sessionAvgPlotMat avg_Ca_responses(:,2)];
